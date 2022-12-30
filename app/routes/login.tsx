@@ -4,6 +4,7 @@ import { Link, useActionData, useSearchParams } from '@remix-run/react';
 
 import stylesUrl from '~/styles/login.css';
 import { badRequest } from '~/utils/request.server';
+import { createUserSession, login } from '~/utils/session.server';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: stylesUrl },
@@ -59,6 +60,19 @@ export const action = async ({ request }: ActionArgs) => {
       fields,
       formError: null,
     });
+  }
+  switch (loginType) {
+    case 'login': {
+      const user = await login({ username, password });
+      if (!user) {
+        return badRequest({
+          fieldErrors: null,
+          fields,
+          formError: 'Username Password combination is incorrect',
+        });
+      }
+      return createUserSession(user.id, redirectTo);
+    }
   }
   return redirect(finalRedirectTo);
 };
