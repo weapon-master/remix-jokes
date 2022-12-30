@@ -10,6 +10,7 @@ import {
 import globalStylesUrl from '~/styles/global.css';
 import globalMediumStylesUrl from '~/styles/global-medium.css';
 import globalLargeStylesUrl from '~/styles/global-large.css';
+import type { FC, ReactNode } from 'react';
 
 /**
  * This is the root of React
@@ -34,20 +35,38 @@ export const links: LinksFunction = () => [
   },
 ];
 
+const Document: FC<{ title: string; children: ReactNode }> = ({
+  title,
+  children,
+}) => (
+  <html lang='en'>
+    <head>
+      <Meta />
+      <title>{title}</title>
+      <Links />
+    </head>
+    <body>
+      {children}
+      <ScrollRestoration />
+      <Scripts />
+      <LiveReload />
+    </body>
+  </html>
+);
+
 export default function App() {
   return (
-    <html lang='en'>
-      <head>
-        <Meta />
-        {/*  Links is used to import all links exported by active routes */}
-        <Links />
-      </head>
-      <body>
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
+    <Document title='Remix Jokes'>
+      <Outlet />
+    </Document>
   );
 }
+
+export const ErrorBoundary = ({ error }: { error: Error }) => (
+  <Document title='Remix Jokes'>
+    <div className='error-container'>
+      <h1>App Error</h1>
+      <pre>{error.message}</pre>
+    </div>
+  </Document>
+);

@@ -13,6 +13,10 @@ export const loader = async () => {
   return json({ randomJoke });
 };
 
+export function ErrorBoundary() {
+  return <div className='error-container'>I did a whoopsies.</div>;
+}
+
 export default function JokesIndexRoute() {
   const data = useLoaderData<typeof loader>();
   return (
