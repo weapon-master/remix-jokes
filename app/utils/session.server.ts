@@ -84,6 +84,14 @@ export const getUser = async (request: Request) => {
   }
 };
 
+export const register = async ({ username, password }: LoginForm) => {
+  const passwdHash = await bcrypt.hash(password, 10);
+  const newUser = await db.user.create({
+    data: { username, passwordHash: passwdHash },
+  });
+  return { id: newUser.id, username };
+};
+
 export const createUserSession = async (userId: string, redirectTo: string) => {
   const session = await storage.getSession();
   session.set('userId', userId);

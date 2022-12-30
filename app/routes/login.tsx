@@ -1,10 +1,10 @@
 import type { ActionArgs, LinksFunction } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
 import { Link, useActionData, useSearchParams } from '@remix-run/react';
 
 import stylesUrl from '~/styles/login.css';
+import { db } from '~/utils/db.server';
 import { badRequest } from '~/utils/request.server';
-import { createUserSession, login } from '~/utils/session.server';
+import { createUserSession, login, register } from '~/utils/session.server';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: stylesUrl },
@@ -61,6 +61,7 @@ export const action = async ({ request }: ActionArgs) => {
       formError: null,
     });
   }
+  console.log({ redirectTo });
   switch (loginType) {
     case 'login': {
       const user = await login({ username, password });
@@ -71,10 +72,35 @@ export const action = async ({ request }: ActionArgs) => {
           formError: 'Username Password combination is incorrect',
         });
       }
-      return createUserSession(user.id, redirectTo);
+      return createUserSession(user.id, finalRedirectTo);
+    }
+    case 'register': {
+      const existUser = await db.user.findUnique({ where: { username } });
+      if (existUser) {
+        return badRequest({
+          fieldErrors: null,
+          fields,
+          formError: `Username ${username} has already existed`,
+        });
+      }
+      const user = await register({ username, password });
+      if (!user) {
+        return badRequest({
+          fieldErrors: null,
+          fields,
+          formError: `Something goes wrong when registering`,
+        });
+      }
+      return createUserSession(user.id, finalRedirectTo);
+    }
+    default: {
+      return badRequest({
+        fieldErrors: null,
+        fields,
+        formError: 'Login type invalid',
+      });
     }
   }
-  return redirect(finalRedirectTo);
 };
 
 export default function Login() {
