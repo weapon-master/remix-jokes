@@ -23,7 +23,7 @@ const validatePassword = (password: string) => {
 };
 
 const validateUrl = (url: string) => {
-  const urls = ['/jokes', '/', 'https://remix.run'];
+  const urls = ['/jokes', '/', 'https://remix.run', '/jokes/new'];
   if (urls.includes(url)) {
     return url;
   }

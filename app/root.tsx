@@ -6,6 +6,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useCatch,
 } from '@remix-run/react';
 import globalStylesUrl from '~/styles/global.css';
 import globalMediumStylesUrl from '~/styles/global-medium.css';
@@ -61,6 +62,19 @@ export default function App() {
     </Document>
   );
 }
+
+export const CatchBoundary = () => {
+  const caught = useCatch();
+  return (
+    <Document title={`${caught.status} ${caught.statusText}`}>
+      <div className='error-container'>
+        <h1>
+          {caught.status} {caught.statusText}
+        </h1>
+      </div>
+    </Document>
+  );
+};
 
 export const ErrorBoundary = ({ error }: { error: Error }) => (
   <Document title='Remix Jokes'>
