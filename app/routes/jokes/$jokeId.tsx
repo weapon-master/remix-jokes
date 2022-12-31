@@ -2,12 +2,12 @@ import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import {
-  Form,
-  Link,
   useCatch,
   useLoaderData,
   useParams,
+  useTransition,
 } from '@remix-run/react';
+import JokeDetail from '~/components/joke';
 import { db } from '~/utils/db.server';
 import { getUserId } from '~/utils/session.server';
 
@@ -90,18 +90,12 @@ export const CatchBoundary = () => {
 
 export default function JokeRoute() {
   const { joke, isOwner } = useLoaderData<typeof loader>();
+  const transition = useTransition();
   return (
-    <div>
-      <p>Here's your hilarious joke:</p>
-      <p>{joke?.content}</p>
-      <Link to='.'>{joke?.name} Permalink</Link>
-      {isOwner ? (
-        <Form method='post'>
-          <button className='button' name='intent' type='submit' value='delete'>
-            Delete
-          </button>
-        </Form>
-      ) : null}
-    </div>
+    <JokeDetail
+      joke={joke}
+      isOwner={isOwner}
+      disabled={transition.state !== 'idle'}
+    />
   );
 }
