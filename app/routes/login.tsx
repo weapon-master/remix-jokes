@@ -1,4 +1,4 @@
-import type { ActionArgs, LinksFunction } from '@remix-run/node';
+import type { ActionArgs, LinksFunction, MetaFunction } from '@remix-run/node';
 import { Link, useActionData, useSearchParams } from '@remix-run/react';
 
 import stylesUrl from '~/styles/login.css';
@@ -9,6 +9,11 @@ import { createUserSession, login, register } from '~/utils/session.server';
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: stylesUrl },
 ];
+
+export const meta: MetaFunction = () => ({
+  title: 'Login Remix Joke',
+  description: 'Login to submit your own jokes',
+});
 
 const validateUsername = (username: string) => {
   if (typeof username !== 'string' || username.length < 3) {

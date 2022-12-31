@@ -16,10 +16,20 @@ import type { FC, ReactNode } from 'react';
 /**
  * This is the root of React
  */
+
+const description = 'Learn Remix an laugh at the same time';
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
-  title: 'New Remix App',
+  title: 'Remix Jokes',
+  description,
+  keywords: 'Remix, jokes',
   viewport: 'width=device-width,initial-scale=1',
+  'twitter:image': 'https://remix-jokes.lol/social.png',
+  'twitter:card': 'summary_large_image',
+  'twitter:creator': '@remix_run',
+  'twitter:site': '@remix_run',
+  'twitter:title': 'Remix Jokes',
+  'twitter:description': description,
 });
 
 export const links: LinksFunction = () => [
@@ -43,7 +53,8 @@ const Document: FC<{ title: string; children: ReactNode }> = ({
   <html lang='en'>
     <head>
       <Meta />
-      <title>{title}</title>
+      {/* this title is a fallback in case that title is not provided by Metas */}
+      <title>Remix Jokes!!!</title>
       <Links />
     </head>
     <body>

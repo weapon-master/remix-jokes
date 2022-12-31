@@ -1,9 +1,22 @@
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Link, useCatch, useLoaderData, useParams } from '@remix-run/react';
 import { db } from '~/utils/db.server';
 import { getUserId } from '~/utils/session.server';
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data) {
+    return {
+      title: 'No Joke',
+      description: 'No Joke Found',
+    };
+  }
+  return {
+    title: `${data.joke.name} Joke`,
+    description: `Have fun with ${data.joke.name}`,
+  };
+};
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const joke = await db.joke.findUnique({ where: { id: params.jokeId } });
